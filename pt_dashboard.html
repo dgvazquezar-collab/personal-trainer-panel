@@ -7,26 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --negro: #0a0a0a;
-    --carbon: #111318;
-    --panel: #161b24;
-    --borde: #1e2535;
-    --borde2: #2a3347;
-    --oro: #c9a84c;
-    --oro2: #e8c870;
-    --oro-dim: rgba(201,168,76,0.12);
-    --oro-glow: rgba(201,168,76,0.25);
-    --texto: #e8e4d8;
-    --texto2: #8a8f9e;
-    --texto3: #4a5068;
-    --verde: #3ecf8e;
-    --verde-dim: rgba(62,207,142,0.1);
+    --negro: #0d0d0f;
+    --carbon: #141416;
+    --panel: #1a1a1e;
+    --borde: #252528;
+    --borde2: #303035;
+    --oro: #a78bfa;
+    --oro2: #c4b5fd;
+    --oro-dim: rgba(167,139,250,0.1);
+    --oro-glow: rgba(167,139,250,0.2);
+    --texto: #f0f0f2;
+    --texto2: #9090a0;
+    --texto3: #505060;
+    --verde: #a78bfa;
+    --verde-dim: rgba(167,139,250,0.1);
     --rojo: #e85d5d;
     --rojo-dim: rgba(232,93,93,0.1);
-    --azul: #5d9be8;
-    --azul-dim: rgba(93,155,232,0.1);
-    --amber: #f0a84a;
-    --amber-dim: rgba(240,168,74,0.1);
+    --azul: #d4d4e8;
+    --azul-dim: rgba(212,212,232,0.08);
+    --amber: #c4b5fd;
+    --amber-dim: rgba(196,181,253,0.1);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -44,7 +44,7 @@
     content:'';
     position:fixed; inset:0;
     background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(167,139,250,0.07) 0%, transparent 70%),
       repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px),
       repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px);
     pointer-events:none; z-index:0;
@@ -795,5 +795,195 @@ if (sessionStorage.getItem("pt_auth")) {
   cargarDashboard();
 }
 </script>
+
+<!-- ══════════════════════════════════════════
+     MUSIC PLAYER — FIERRERO 🤘 Panel Profesional
+     ══════════════════════════════════════════ -->
+<style>
+.music-player {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 999; display: flex; flex-direction: column;
+  align-items: flex-end; gap: 10px;
+}
+.music-fab {
+  width: 52px; height: 52px;
+  background: #1a1a1e;
+  border: 1px solid #303035;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+  position: relative; flex-shrink: 0;
+  font-size: 20px;
+}
+.music-fab:hover { border-color: #e85d5d; transform: scale(1.08); box-shadow: 0 4px 32px rgba(232,93,93,0.25); }
+.music-fab.playing { border-color: #e85d5d; box-shadow: 0 0 0 3px rgba(232,93,93,0.15), 0 4px 24px rgba(0,0,0,0.5); }
+.music-fab.playing::before {
+  content: ''; position: absolute; inset: -6px;
+  border-radius: 50%; border: 1px solid rgba(232,93,93,0.35);
+  animation: punk-ring 1.2s ease-out infinite;
+}
+@keyframes punk-ring {
+  0%   { transform: scale(1); opacity:.7; }
+  100% { transform: scale(1.5); opacity:0; }
+}
+.music-panel {
+  background: #0f0f0f;
+  border: 1px solid #2a1a1a;
+  border-radius: 18px; overflow: hidden; width: 300px;
+  box-shadow: 0 8px 40px rgba(232,93,93,0.1), 0 4px 20px rgba(0,0,0,0.6);
+  transform-origin: bottom right;
+  transition: opacity .25s, transform .25s;
+  opacity: 0; transform: scale(0.85) translateY(8px); pointer-events: none;
+}
+.music-panel.open { opacity: 1; transform: scale(1) translateY(0); pointer-events: all; }
+.mp-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #1f1010;
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, #1a0a0a, #0f0f0f);
+}
+.mp-disc {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, #e85d5d, #7f0000);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.mp-disc.spinning { animation: spin-fast 1.5s linear infinite; }
+@keyframes spin-fast { to { transform: rotate(360deg); } }
+.mp-track-name { font-size: 13px; font-weight: 700; color: #f0f0f2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.mp-track-sub  { font-size: 11px; color: #e85d5d; letter-spacing: .5px; }
+.mp-controls {
+  padding: 14px 18px; border-bottom: 1px solid #1f1010;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  background: #0f0f0f;
+}
+.mp-btn { background: none; border: none; color: #604040; cursor: pointer; font-size: 18px; padding: 6px; border-radius: 8px; transition: color .15s, background .15s; display: flex; align-items: center; justify-content: center; }
+.mp-btn:hover { color: #f0f0f2; background: rgba(232,93,93,0.1); }
+.mp-btn-play { width: 44px; height: 44px; background: #e85d5d; border-radius: 50%; color: #0f0f0f; font-size: 16px; transition: background .2s, transform .1s; font-weight: 900; }
+.mp-btn-play:hover { background: #ff7070; transform: scale(1.08); color: #0f0f0f; }
+.mp-volume { padding: 10px 18px; border-bottom: 1px solid #1f1010; display: flex; align-items: center; gap: 10px; background: #0f0f0f; }
+.mp-vol-icon { font-size: 14px; color: #604040; }
+.mp-vol-slider { flex: 1; height: 3px; -webkit-appearance: none; background: linear-gradient(90deg, #e85d5d 70%, #2a1a1a 70%); border-radius: 3px; outline: none; cursor: pointer; }
+.mp-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #e85d5d; cursor: pointer; }
+.mp-playlists-label { padding: 10px 18px 6px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #604040; background: #0f0f0f; font-family: 'Bebas Neue'; font-size: 13px; }
+.mp-playlist-item { padding: 10px 18px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: background .15s; background: #0f0f0f; }
+.mp-playlist-item:hover { background: rgba(232,93,93,0.06); }
+.mp-playlist-item.active { background: rgba(232,93,93,0.1); }
+.mp-playlist-dot { width: 8px; height: 8px; border-radius: 50%; background: #2a1a1a; flex-shrink: 0; }
+.mp-playlist-item.active .mp-playlist-dot { background: #e85d5d; box-shadow: 0 0 6px rgba(232,93,93,0.5); }
+.mp-playlist-name { font-size: 13px; color: #604040; flex:1; transition: color .15s; }
+.mp-playlist-item.active .mp-playlist-name,
+.mp-playlist-item:hover .mp-playlist-name { color: #f0f0f2; font-weight: 500; }
+.mp-playlist-dur { font-size: 11px; color: #3a2020; }
+.mp-footer { padding: 8px 18px; font-size: 10px; color: #2a1a1a; text-align: center; letter-spacing: 1px; border-top: 1px solid #1a0a0a; background: #0f0f0f; }
+.yt-frame { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; top: -9999px; left: -9999px; }
+</style>
+
+<div class="music-player" id="musicPlayer">
+  <div class="music-panel" id="musicPanel">
+    <div class="mp-header">
+      <div class="mp-disc" id="mpDisc">🤘</div>
+      <div style="flex:1;overflow:hidden;">
+        <div class="mp-track-name" id="mpTrackName">BEAST MODE 🔥</div>
+        <div class="mp-track-sub" id="mpTrackSub">Gym · Metal · Hardcore</div>
+      </div>
+    </div>
+    <div class="mp-controls">
+      <button class="mp-btn" onclick="prevPlaylist()">⏮</button>
+      <button class="mp-btn mp-btn-play" id="mpPlayBtn" onclick="togglePlay()">▶</button>
+      <button class="mp-btn" onclick="nextPlaylist()">⏭</button>
+    </div>
+    <div class="mp-volume">
+      <span class="mp-vol-icon">🔈</span>
+      <input type="range" class="mp-vol-slider" id="mpVolume" min="0" max="100" value="80" oninput="setVolume(this.value)">
+      <span class="mp-vol-icon">🔊</span>
+    </div>
+    <div class="mp-playlists-label">⚡ PLAYLISTS FIERRERAS</div>
+    <div id="mpPlaylistList"></div>
+    <div class="mp-footer">🤘 BEAST MODE ACTIVADO 🤘</div>
+  </div>
+  <div class="music-fab" id="musicFab" onclick="togglePanel()">🤘</div>
+</div>
+
+<iframe class="yt-frame" id="ytFrame" allow="autoplay" allowfullscreen></iframe>
+
+<script>
+const PLAYLISTS_GYM = [
+  { name: "BEST WORKOUT MUSIC 2026 ⚡",    sub: "Gym Motivation · Max Oazo",         ytId: "q6xgKE5alcg" },
+  { name: "UNLEASHED 🔥 Savage Hardcore",  sub: "Hardcore Trap · Beast Mode 2025",   ytId: "LDCNJYZXK3g" },
+  { name: "BEAST MODE ⚡ Hardcore 2025",   sub: "Savage Energy · Gym Motivation",    ytId: "FKeVibuKeCw" },
+  { name: "Epic POWER Metal 2026 🤘",      sub: "Heavy Metal · Hard Rock",           ytId: "iB_RUTDccyY" },
+  { name: "Heavy Metal Gym Motivation 🤘", sub: "Hard Rock · Metal Mix",             ytId: "Q7JIym6E7J4" },
+  { name: "GYM MOTIVATION 2026 🔥 24/7",  sub: "Fitness · Running · Non-stop",      ytId: "C27I_4D5bMo" },
+];
+
+let gCurrentIdx = 0, gPlaying = false, gPanelOpen = false;
+
+const gPanel    = document.getElementById("musicPanel");
+const gFab      = document.getElementById("musicFab");
+const gPlayBtn  = document.getElementById("mpPlayBtn");
+const gDisc     = document.getElementById("mpDisc");
+const gTrackName= document.getElementById("mpTrackName");
+const gTrackSub = document.getElementById("mpTrackSub");
+const gYtFrame  = document.getElementById("ytFrame");
+const gVolSlider= document.getElementById("mpVolume");
+const gListEl   = document.getElementById("mpPlaylistList");
+
+function renderGymList() {
+  gListEl.innerHTML = PLAYLISTS_GYM.map((p, i) => `
+    <div class="mp-playlist-item ${i === gCurrentIdx ? 'active' : ''}" onclick="selectGym(${i})">
+      <div class="mp-playlist-dot"></div>
+      <div class="mp-playlist-name">${p.name}</div>
+      <div class="mp-playlist-dur">▶</div>
+    </div>
+  `).join("");
+}
+renderGymList();
+
+function togglePanel() {
+  gPanelOpen = !gPanelOpen;
+  gPanel.classList.toggle("open", gPanelOpen);
+}
+
+function selectGym(idx) {
+  gCurrentIdx = idx;
+  renderGymList();
+  const p = PLAYLISTS_GYM[idx];
+  gTrackName.textContent = p.name;
+  gTrackSub.textContent  = p.sub;
+  const params = "autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1";
+  gYtFrame.src = `https://www.youtube.com/embed/${p.ytId}?${params}`;
+  gPlaying = true; updateGymUI();
+}
+
+function togglePlay() {
+  if (!gYtFrame.src || gYtFrame.src === "about:blank") { selectGym(0); return; }
+  if (gPlaying) {
+    gYtFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    gPlaying = false;
+  } else {
+    gYtFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    gPlaying = true;
+  }
+  updateGymUI();
+}
+
+function prevPlaylist() { gCurrentIdx = (gCurrentIdx - 1 + PLAYLISTS_GYM.length) % PLAYLISTS_GYM.length; selectGym(gCurrentIdx); }
+function nextPlaylist()  { gCurrentIdx = (gCurrentIdx + 1) % PLAYLISTS_GYM.length; selectGym(gCurrentIdx); }
+
+function setVolume(val) {
+  gVolSlider.style.background = `linear-gradient(90deg, #e85d5d ${val}%, #2a1a1a ${val}%)`;
+  gYtFrame.contentWindow?.postMessage(`{"event":"command","func":"setVolume","args":[${val}]}`, '*');
+}
+
+function updateGymUI() {
+  gPlayBtn.textContent = gPlaying ? "⏸" : "▶";
+  gFab.classList.toggle("playing", gPlaying);
+  gDisc.classList.toggle("spinning", gPlaying);
+}
+</script>
+<!-- ══ FIN PLAYER FIERRERO ══ -->
 </body>
 </html>
