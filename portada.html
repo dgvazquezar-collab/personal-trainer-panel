@@ -200,10 +200,13 @@
   }
 
   .card-icono {
-    font-size: 40px;
     margin-bottom: auto;
-    display: block;
+    display: flex;
+    color: currentColor;
+    opacity: .6;
   }
+  .card-prof .card-icono { color: var(--rojo); }
+  .card-alum .card-icono { color: var(--purp); }
 
   .card-rol {
     font-size: 10px; letter-spacing: 3px;
@@ -323,7 +326,7 @@
     background: linear-gradient(90deg, transparent, rgba(167,139,250,0.6), transparent);
   }
 
-  .modal-icono { font-size: 36px; margin-bottom: 16px; }
+  .modal-icono { font-size: 36px; margin-bottom: 16px; display:flex; justify-content:center; }
 
   .modal-titulo {
     font-family: 'Bebas Neue'; font-size: 26px;
@@ -420,14 +423,14 @@
       <div class="card-line"></div>
       <div class="card-num-bg">01</div>
       <div class="card-body">
-        <span class="card-icono">🏋️</span>
+        <div class="card-icono"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="11" width="3" height="2" rx="1"/><rect x="19" y="11" width="3" height="2" rx="1"/><rect x="5" y="9" width="2" height="6" rx="1"/><rect x="17" y="9" width="2" height="6" rx="1"/><line x1="7" y1="12" x2="17" y2="12"/></svg></div>
         <div class="card-rol">Acceso con contraseña</div>
         <div class="card-titulo">SOY PROFESIONAL</div>
         <div class="card-desc">Panel de gestión, dashboard, turnos y seguimiento de todos los alumnos.</div>
         <div class="card-badge">
           Ingresar <span class="badge-flecha">→</span>
         </div>
-        <div class="card-restriccion">🔒 Acceso restringido</div>
+        <div class="card-restriccion">— Acceso restringido</div>
       </div>
     </a>
 
@@ -436,14 +439,14 @@
       <div class="card-line"></div>
       <div class="card-num-bg">02</div>
       <div class="card-body">
-        <span class="card-icono">🧘</span>
+        <div class="card-icono"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
         <div class="card-rol">Acceso con DNI</div>
         <div class="card-titulo">SOY ALUMNO/A</div>
         <div class="card-desc">Consultá tu rutina, progreso, asistencias y música ambiente para entrenar.</div>
         <div class="card-badge">
           Ver mi perfil <span class="badge-flecha">→</span>
         </div>
-        <div class="card-restriccion">🔐 Solo ves tu información</div>
+        <div class="card-restriccion">— Solo ves tu información</div>
       </div>
     </div>
 
@@ -458,7 +461,7 @@
 <!-- MODAL DNI -->
 <div class="modal-overlay" id="modalDNI" onclick="cerrarSiOverlay(event)">
   <div class="modal-box">
-    <div class="modal-icono">🔐</div>
+    <div class="modal-icono" style="color:var(--purp)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.2" fill="currentColor"/></svg></div>
     <div class="modal-titulo">Ingresá tu DNI</div>
     <div class="modal-sub">Sin puntos ni espacios</div>
     <input
