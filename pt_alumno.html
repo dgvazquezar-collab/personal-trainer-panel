@@ -695,7 +695,7 @@ const cargar = {
                 <div class="ej-card-v2">
                   <div class="ej-img-wrap-v2">
                     <img
-                      src="https://source.unsplash.com/300x200/?gym,exercise,${encodeURIComponent(e.grupo.toLowerCase())},fitness"
+                      src="${e.img || getImgGrupo(e.grupo)}"
                       class="ej-img-v2"
                       alt="${e.ejercicio}"
                       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
@@ -846,6 +846,39 @@ const cargar = {
   }
 };
 
+
+// ── IMÁGENES POR GRUPO MUSCULAR ──
+function getImgGrupo(grupo) {
+  const g = grupo.toLowerCase();
+  const imgs = {
+    // Piernas
+    'piernas':    'https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=400&q=75&fit=crop',
+    'cuádriceps': 'https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=400&q=75&fit=crop',
+    'cuadriceps': 'https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=400&q=75&fit=crop',
+    'glúteos':    'https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?w=400&q=75&fit=crop',
+    'gluteos':    'https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?w=400&q=75&fit=crop',
+    'isquiotibiales': 'https://images.unsplash.com/photo-1434608519344-49d77a124f18?w=400&q=75&fit=crop',
+    'gemelos':    'https://images.unsplash.com/photo-1434608519344-49d77a124f18?w=400&q=75&fit=crop',
+    // Tren superior
+    'pecho':      'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=75&fit=crop',
+    'espalda':    'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&q=75&fit=crop',
+    'hombros':    'https://images.unsplash.com/photo-1532029837206-abbe2b7620e3?w=400&q=75&fit=crop',
+    'bíceps':     'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=75&fit=crop',
+    'biceps':     'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=75&fit=crop',
+    'tríceps':    'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=400&q=75&fit=crop',
+    'triceps':    'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=400&q=75&fit=crop',
+    // Core y cardio
+    'core':       'https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=400&q=75&fit=crop',
+    'abdomen':    'https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=400&q=75&fit=crop',
+    'cardio':     'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=400&q=75&fit=crop',
+  };
+  // Buscar coincidencia parcial
+  for (const key of Object.keys(imgs)) {
+    if (g.includes(key) || key.includes(g)) return imgs[key];
+  }
+  // Default — imagen genérica de gym
+  return 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=75&fit=crop';
+}
 function salir() {
   sessionStorage.removeItem("pt_dni");
   sessionStorage.removeItem("pt_nombre");
