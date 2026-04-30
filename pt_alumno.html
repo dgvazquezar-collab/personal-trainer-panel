@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRL — Mi Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #0a0a0a;
+    --carbon: #111318;
+    --panel: #161b24;
+    --borde: #1e2535;
+    --borde2: #2a3347;
+    --azul: #5d9be8;
+    --azul2: #7ab4f0;
+    --azul-dim: rgba(93,155,232,0.1);
+    --azul-glow: rgba(93,155,232,0.2);
+    --oro: #c9a84c;
+    --oro-dim: rgba(201,168,76,0.1);
+    --texto: #e8e4d8;
+    --texto2: #8a8f9e;
+    --texto3: #4a5068;
+    --verde: #3ecf8e;
+    --verde-dim: rgba(62,207,142,0.1);
+    --rojo: #e85d5d;
+    --rojo-dim: rgba(232,93,93,0.1);
+    --amber: #f0a84a;
+    --amber-dim: rgba(240,168,74,0.1);
+    --morado: #a78bfa;
+    --morado-dim: rgba(167,139,250,0.1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--negro);
+    color: var(--texto);
+    font-family: 'DM Sans', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(93,155,232,0.05) 0%, transparent 70%);
+    pointer-events:none; z-index:0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position:sticky; top:0; z-index:50;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter:blur(16px);
+    border-bottom: 1px solid var(--borde);
+    padding:0 24px;
+    height:60px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .header-left { display:flex; align-items:center; gap:12px; }
+
+  .avatar-header {
+    width:36px; height:36px;
+    border-radius:50%;
+    background: var(--azul-dim);
+    border: 1.5px solid var(--azul);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue'; font-size:14px;
+    color: var(--azul);
+  }
+
+  .header-nombre { font-weight:500; font-size:15px; color: var(--texto); }
+  .header-dni    { font-size:11px; color: var(--texto3); letter-spacing:1px; }
+
+  .btn-salir {
+    background:none; border: 1px solid var(--borde2);
+    color: var(--texto3); border-radius:8px;
+    padding:6px 14px; font-size:11px;
+    letter-spacing:1px; cursor:pointer;
+    font-family:'DM Sans'; transition: all .2s;
+  }
+  .btn-salir:hover { border-color:var(--rojo); color:var(--rojo); }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    position:sticky; top:60px; z-index:40;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter:blur(12px);
+    border-bottom: 1px solid var(--borde);
+    display:flex; overflow-x:auto; padding:0 20px;
+    scrollbar-width:none;
+  }
+  .tabs-bar::-webkit-scrollbar { display:none; }
+
+  .tab-btn {
+    background:none; border:none;
+    color: var(--texto3);
+    font-family:'DM Sans'; font-size:13px; font-weight:500;
+    padding:14px 20px;
+    cursor:pointer; white-space:nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    letter-spacing:.5px;
+  }
+
+  .tab-btn:hover { color: var(--texto2); }
+  .tab-btn.active {
+    color: var(--azul);
+    border-bottom-color: var(--azul);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width:860px;
+    margin:0 auto;
+    padding:28px 20px;
+    position:relative; z-index:1;
+  }
+
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  .section-label {
+    font-size:10px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--texto3);
+    margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-label::after {
+    content:''; flex:1; height:1px;
+    background: linear-gradient(90deg, var(--borde), transparent);
+  }
+
+  /* ── PERFIL ── */
+  .perfil-hero {
+    background: var(--carbon);
+    border: 1px solid var(--borde);
+    border-radius:20px;
+    padding:32px;
+    margin-bottom:20px;
+    display:flex; align-items:center; gap:24px;
+    position:relative; overflow:hidden;
+  }
+
+  .perfil-hero::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, transparent, var(--azul), transparent);
+  }
+
+  .perfil-avatar-big {
+    width:72px; height:72px;
+    border-radius:50%;
+    background: var(--azul-dim);
+    border: 2px solid var(--azul);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue'; font-size:26px;
+    color: var(--azul); flex-shrink:0;
+  }
+
+  .perfil-nombre-big {
+    font-family:'Bebas Neue'; font-size:28px;
+    letter-spacing:2px; color:var(--texto);
+    margin-bottom:4px;
+  }
+
+  .perfil-tags { display:flex; gap:8px; flex-wrap:wrap; }
+
+  .tag {
+    font-size:11px; font-weight:500;
+    padding:3px 10px; border-radius:20px;
+    letter-spacing:.5px;
+  }
+
+  .tag-azul  { background:var(--azul-dim);  color:var(--azul);  border:1px solid rgba(93,155,232,0.2); }
+  .tag-verde { background:var(--verde-dim); color:var(--verde); border:1px solid rgba(62,207,142,0.2); }
+  .tag-oro   { background:var(--oro-dim);   color:var(--oro);   border:1px solid rgba(201,168,76,0.2); }
+  .tag-amber { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(240,168,74,0.2); }
+  .tag-morado{ background:var(--morado-dim);color:var(--morado);border:1px solid rgba(167,139,250,0.2); }
+
+  .datos-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .dato-card {
+    background:var(--carbon);
+    border:1px solid var(--borde);
+    border-radius:12px;
+    padding:16px 18px;
+  }
+
+  .dato-label {
+    font-size:10px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--texto3);
+    margin-bottom:4px;
+  }
+
+  .dato-val {
+    font-size:15px; font-weight:500;
+    color:var(--texto);
+  }
+
+  /* ── RUTINA ── */
+  .dia-block { margin-bottom:20px; }
+
+  .dia-titulo {
+    font-family:'Bebas Neue'; font-size:20px;
+    letter-spacing:2px; padding:10px 16px;
+    border-radius:10px 10px 0 0;
+    border:1px solid var(--borde2);
+    border-bottom:none;
+    display:flex; align-items:center; gap:10px;
+  }
+
+  .dia-lunes   { color:var(--verde); background:rgba(62,207,142,0.05); }
+  .dia-miercoles { color:var(--azul); background:rgba(93,155,232,0.05); }
+  .dia-jueves  { color:var(--amber); background:rgba(240,168,74,0.05); }
+  .dia-viernes { color:var(--morado); background:rgba(167,139,250,0.05); }
+  .dia-sabado  { color:var(--oro); background:rgba(201,168,76,0.05); }
+  .dia-default { color:var(--texto2); background:rgba(255,255,255,0.02); }
+
+  .ejercicio-table {
+    width:100%;
+    border-collapse:collapse;
+    background:var(--carbon);
+    border:1px solid var(--borde2);
+    border-radius:0 0 10px 10px;
+    overflow:hidden;
+  }
+
+  .ejercicio-table th {
+    background:var(--panel);
+    font-size:10px; letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--texto3);
+    padding:10px 14px;
+    text-align:left;
+    font-weight:500;
+    border-bottom:1px solid var(--borde);
+  }
+
+  .ejercicio-table td {
+    padding:12px 14px;
+    font-size:13px;
+    border-bottom:1px solid var(--borde);
+    vertical-align:middle;
+  }
+
+  .ejercicio-table tr:last-child td { border-bottom:none; }
+  .ejercicio-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+  .ejercicio-nombre { font-weight:500; color:var(--texto); }
+  .ejercicio-grupo  { font-size:11px; color:var(--texto3); margin-top:2px; }
+
+  .pill-series {
+    background:var(--azul-dim); color:var(--azul);
+    border-radius:20px; padding:2px 10px;
+    font-size:12px; font-weight:600;
+  }
+
+  .pill-carga {
+    background:var(--amber-dim); color:var(--amber);
+    border-radius:20px; padding:2px 10px;
+    font-size:12px; font-weight:600;
+  }
+
+  /* ── PROGRESO ── */
+  .progreso-cards {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:24px;
+  }
+
+  .met-card {
+    background:var(--carbon);
+    border:1px solid var(--borde);
+    border-radius:14px;
+    padding:20px 16px;
+    text-align:center;
+    position:relative; overflow:hidden;
+  }
+
+  .met-card::before {
+    content:''; position:absolute;
+    top:0; left:0; right:0; height:2px;
+  }
+
+  .met-card.peso::before   { background:linear-gradient(90deg,transparent,var(--azul),transparent); }
+  .met-card.grasa::before  { background:linear-gradient(90deg,transparent,var(--amber),transparent); }
+  .met-card.musculo::before{ background:linear-gradient(90deg,transparent,var(--verde),transparent); }
+  .met-card.cintura::before{ background:linear-gradient(90deg,transparent,var(--morado),transparent); }
+  .met-card.press::before  { background:linear-gradient(90deg,transparent,var(--oro),transparent); }
+  .met-card.sent::before   { background:linear-gradient(90deg,transparent,var(--rojo),transparent); }
+
+  .met-val {
+    font-family:'Bebas Neue'; font-size:38px;
+    line-height:1; margin-bottom:2px;
+  }
+
+  .met-unit { font-size:13px; color:var(--texto2); margin-left:2px; }
+  .met-label { font-size:11px; color:var(--texto3); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+
+  .met-delta {
+    font-size:11px; font-weight:600;
+    padding:2px 8px; border-radius:20px;
+    display:inline-block;
+  }
+
+  .delta-pos { background:var(--verde-dim); color:var(--verde); }
+  .delta-neg { background:var(--rojo-dim);  color:var(--rojo); }
+  .delta-neu { background:rgba(255,255,255,0.05); color:var(--texto3); }
+
+  /* Historial progreso */
+  .historial-table {
+    width:100%;
+    border-collapse:collapse;
+    background:var(--carbon);
+    border:1px solid var(--borde);
+    border-radius:12px;
+    overflow:hidden;
+  }
+
+  .historial-table th {
+    background:var(--panel);
+    font-size:10px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--texto3);
+    padding:10px 14px; text-align:left;
+    font-weight:500; border-bottom:1px solid var(--borde);
+  }
+
+  .historial-table td {
+    padding:11px 14px; font-size:13px;
+    border-bottom:1px solid var(--borde);
+  }
+
+  .historial-table tr:last-child td { border-bottom:none; }
+  .historial-table tr:hover td { background:rgba(255,255,255,0.015); }
+
+  /* ── ASISTENCIAS ── */
+  .asist-resumen {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:12px; margin-bottom:20px;
+  }
+
+  .asist-kpi {
+    background:var(--carbon);
+    border:1px solid var(--borde);
+    border-radius:14px;
+    padding:20px 16px; text-align:center;
+  }
+
+  .asist-num {
+    font-family:'Bebas Neue'; font-size:44px;
+    line-height:1; margin-bottom:4px;
+  }
+
+  .asist-num.verde  { color:var(--verde); }
+  .asist-num.rojo   { color:var(--rojo); }
+  .asist-num.azul   { color:var(--azul); }
+  .asist-label { font-size:11px; color:var(--texto3); text-transform:uppercase; letter-spacing:1px; }
+
+  .asist-item {
+    display:flex; align-items:center; gap:14px;
+    padding:13px 18px;
+    border-bottom:1px solid var(--borde);
+    background:var(--carbon);
+    transition:background .15s;
+  }
+
+  .asist-item:first-child { border-radius:12px 12px 0 0; border-top:1px solid var(--borde); }
+  .asist-item:last-child  { border-radius:0 0 12px 12px; }
+  .asist-item:hover       { background:rgba(255,255,255,0.02); }
+
+  .asist-dot {
+    width:10px; height:10px;
+    border-radius:50%; flex-shrink:0;
+  }
+
+  .asist-dot.si  { background:var(--verde); box-shadow:0 0 6px rgba(62,207,142,0.4); }
+  .asist-dot.no  { background:var(--rojo);  box-shadow:0 0 6px rgba(232,93,93,0.3); }
+
+  .asist-fecha  { font-size:13px; font-weight:500; min-width:100px; }
+  .asist-tipo   { font-size:12px; color:var(--texto3); flex:1; }
+  .asist-estado { font-size:12px; font-weight:600; }
+  .asist-estado.si  { color:var(--verde); }
+  .asist-estado.no  { color:var(--rojo); }
+
+  /* ── LOADING ── */
+  .loading {
+    display:flex; align-items:center; justify-content:center;
+    padding:48px; color:var(--texto3); font-size:13px; gap:10px;
+  }
+
+  .spinner {
+    width:16px; height:16px;
+    border:2px solid var(--borde2);
+    border-top-color:var(--azul);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .empty { padding:40px; text-align:center; color:var(--texto3); font-size:13px; }
+
+  .fade-up {
+    opacity:0; transform:translateY(12px);
+    animation:fadeUp .35s ease forwards;
+  }
+
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  @media(max-width:600px){
+    .datos-grid      { grid-template-columns:1fr; }
+    .progreso-cards  { grid-template-columns:repeat(2,1fr); }
+    .asist-resumen   { grid-template-columns:repeat(3,1fr); }
+    .perfil-hero     { flex-direction:column; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="avatar-header" id="av-header">??</div>
+    <div>
+      <div class="header-nombre" id="hdr-nombre">Cargando...</div>
+      <div class="header-dni" id="hdr-dni">DNI —</div>
+    </div>
+  </div>
+  <button class="btn-salir" onclick="salir()">← Salir</button>
+</header>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="tab('perfil',this)">👤 Mi perfil</button>
+  <button class="tab-btn" onclick="tab('rutina',this)">🏋️ Mi rutina</button>
+  <button class="tab-btn" onclick="tab('progreso',this)">📈 Progreso</button>
+  <button class="tab-btn" onclick="tab('asistencias',this)">📅 Asistencias</button>
+</div>
+
+<div class="main">
+
+  <!-- PERFIL -->
+  <div class="tab-content active" id="tab-perfil">
+    <div class="loading"><div class="spinner"></div> Cargando perfil...</div>
+  </div>
+
+  <!-- RUTINA -->
+  <div class="tab-content" id="tab-rutina">
+    <div class="loading"><div class="spinner"></div> Cargando rutina...</div>
+  </div>
+
+  <!-- PROGRESO -->
+  <div class="tab-content" id="tab-progreso">
+    <div class="loading"><div class="spinner"></div> Cargando progreso...</div>
+  </div>
+
+  <!-- ASISTENCIAS -->
+  <div class="tab-content" id="tab-asistencias">
+    <div class="loading"><div class="spinner"></div> Cargando asistencias...</div>
+  </div>
+
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwE2unIy0dVdxeWOyZfvweWSWuU0IeTvPpPTNRD9dcKPXz9Et-MAtBaUWp12XQJTtze/exec";
+const DNI = sessionStorage.getItem("pt_dni") || "";
+
+if (!DNI) { window.location.href = "pt_dashboard.html"; }
+
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cb = "cb_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    const url = API + "?" + Object.entries({...params, callback: cb})
+      .map(([k,v]) => k+"="+encodeURIComponent(v)).join("&");
+    const s = document.createElement("script");
+    window[cb] = data => { delete window[cb]; s.remove(); resolve(data); };
+    s.onerror = () => reject("Error de red");
+    s.src = url; document.head.appendChild(s);
+    setTimeout(() => reject("Timeout"), 12000);
+  });
+}
+
+// ── TABS ──
+let cargado = {};
+
+function tab(nombre, btn) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("tab-" + nombre).classList.add("active");
+  if (!cargado[nombre]) { cargado[nombre] = true; cargar[nombre](); }
+}
+
+// ── CARGAR FUNCIONES ──
+const cargar = {
+  perfil: async () => {
+    try {
+      const r = await jsonp({ accion: "perfil_alumno", dni: DNI });
+      if (!r.ok) { document.getElementById("tab-perfil").innerHTML = `<div class="empty">${r.error}</div>`; return; }
+      const p = r.perfil;
+      const inis = (p.nombre[0]||"") + (p.apellido[0]||"");
+      document.getElementById("av-header").textContent = inis;
+      document.getElementById("hdr-nombre").textContent = p.nombre + " " + p.apellido;
+      document.getElementById("hdr-dni").textContent = "DNI " + p.dni;
+
+      document.getElementById("tab-perfil").innerHTML = `
+        <div class="perfil-hero fade-up">
+          <div class="perfil-avatar-big">${inis}</div>
+          <div>
+            <div class="perfil-nombre-big">${p.apellido} ${p.nombre}</div>
+            <div class="perfil-tags">
+              <span class="tag tag-verde">${p.estado}</span>
+              <span class="tag tag-azul">${p.objetivo}</span>
+              <span class="tag tag-morado">${p.nivel}</span>
+              <span class="tag tag-amber">${p.modalidad}</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-label">Datos personales</div>
+        <div class="datos-grid fade-up">
+          <div class="dato-card">
+            <div class="dato-label">DNI</div>
+            <div class="dato-val">${p.dni}</div>
+          </div>
+          <div class="dato-card">
+            <div class="dato-label">Teléfono</div>
+            <div class="dato-val">${p.telefono || "—"}</div>
+          </div>
+          <div class="dato-card">
+            <div class="dato-label">Fecha de nacimiento</div>
+            <div class="dato-val">${p.fecha_nac || "—"}</div>
+          </div>
+          <div class="dato-card">
+            <div class="dato-label">Días por semana</div>
+            <div class="dato-val">${p.dias_semana || "—"}</div>
+          </div>
+          <div class="dato-card">
+            <div class="dato-label">Horario</div>
+            <div class="dato-val">${p.horario_fijo || "—"}</div>
+          </div>
+          <div class="dato-card">
+            <div class="dato-label">Obs. médicas</div>
+            <div class="dato-val">${p.obs_medicas || "Sin observaciones"}</div>
+          </div>
+        </div>
+      `;
+    } catch(e) {
+      document.getElementById("tab-perfil").innerHTML = `<div class="empty">Error cargando perfil</div>`;
+    }
+  },
+
+  rutina: async () => {
+    try {
+      const r = await jsonp({ accion: "rutina_alumno", dni: DNI });
+      if (!r.ok || !r.rutina.length) {
+        document.getElementById("tab-rutina").innerHTML = `<div class="empty">No hay rutina cargada aún</div>`;
+        return;
+      }
+
+      const dias = {};
+      r.rutina.forEach(e => {
+        if (!dias[e.dia]) dias[e.dia] = [];
+        dias[e.dia].push(e);
+      });
+
+      const diaClass = d => {
+        const m = d.toLowerCase();
+        if (m.includes("lunes"))    return "dia-lunes";
+        if (m.includes("miér") || m.includes("mier")) return "dia-miercoles";
+        if (m.includes("jueves"))   return "dia-jueves";
+        if (m.includes("viernes"))  return "dia-viernes";
+        if (m.includes("sáb") || m.includes("sab")) return "dia-sabado";
+        return "dia-default";
+      };
+
+      let html = `<div class="section-label">Rutina semanal vigente</div>`;
+
+      Object.entries(dias).forEach(([dia, ejercicios]) => {
+        html += `
+          <div class="dia-block fade-up">
+            <div class="dia-titulo ${diaClass(dia)}">${dia}</div>
+            <table class="ejercicio-table">
+              <thead>
+                <tr>
+                  <th>Ejercicio</th>
+                  <th>Series</th>
+                  <th>Reps / Tiempo</th>
+                  <th>Carga</th>
+                  <th>Pausa</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${ejercicios.map(e => `
+                  <tr>
+                    <td>
+                      <div class="ejercicio-nombre">${e.ejercicio}</div>
+                      <div class="ejercicio-grupo">${e.grupo}</div>
+                    </td>
+                    <td><span class="pill-series">${e.series}×</span></td>
+                    <td>${e.reps}</td>
+                    <td>${e.carga ? `<span class="pill-carga">${e.carga} kg</span>` : "—"}</td>
+                    <td>${e.pausa ? e.pausa + "s" : "—"}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+      });
+
+      document.getElementById("tab-rutina").innerHTML = html;
+    } catch(e) {
+      document.getElementById("tab-rutina").innerHTML = `<div class="empty">Error cargando rutina</div>`;
+    }
+  },
+
+  progreso: async () => {
+    try {
+      const r = await jsonp({ accion: "progreso_alumno", dni: DNI });
+      if (!r.ok || !r.progreso.length) {
+        document.getElementById("tab-progreso").innerHTML = `<div class="empty">Sin registros de progreso aún</div>`;
+        return;
+      }
+
+      const last = r.progreso[r.progreso.length - 1];
+      const first = r.progreso[0];
+
+      const delta = (cur, ini, menor_es_mejor=false) => {
+        const d = parseFloat(cur) - parseFloat(ini);
+        if (isNaN(d) || d === 0) return `<span class="met-delta delta-neu">—</span>`;
+        const pos = menor_es_mejor ? d < 0 : d > 0;
+        const sign = d > 0 ? "+" : "";
+        return `<span class="met-delta ${pos ? "delta-pos" : "delta-neg"}">${sign}${d.toFixed(1)}</span>`;
+      };
+
+      const metrics = [
+        { cls:"peso",    label:"Peso",      val:last.peso,      unit:"kg",  d: delta(last.peso,    first.peso,    true) },
+        { cls:"grasa",   label:"% Grasa",   val:last.pct_grasa, unit:"%",   d: delta(last.pct_grasa, first.pct_grasa, true) },
+        { cls:"musculo", label:"% Músculo", val:last.pct_musculo,unit:"%",  d: delta(last.pct_musculo, first.pct_musculo) },
+        { cls:"cintura", label:"Cintura",   val:last.cintura,   unit:"cm",  d: delta(last.cintura, first.cintura, true) },
+        { cls:"press",   label:"Press",     val:last.press,     unit:"kg",  d: delta(last.press,   first.press) },
+        { cls:"sent",    label:"Sentadilla",val:last.sentadilla,unit:"kg",  d: delta(last.sentadilla, first.sentadilla) },
+      ];
+
+      let html = `
+        <div class="section-label">Última medición — ${last.fecha}</div>
+        <div class="progreso-cards fade-up">
+          ${metrics.map(m => `
+            <div class="met-card ${m.cls}">
+              <div class="met-label">${m.label}</div>
+              <div class="met-val">${m.val || "—"}<span class="met-unit">${m.val ? m.unit : ""}</span></div>
+              ${m.d}
+            </div>
+          `).join("")}
+        </div>
+        <div class="section-label">Historial completo</div>
+        <div class="fade-up">
+        <table class="historial-table">
+          <thead><tr>
+            <th>Fecha</th><th>Peso</th><th>Cintura</th><th>% Grasa</th><th>% Músculo</th><th>Press</th><th>Sentadilla</th>
+          </tr></thead>
+          <tbody>
+            ${r.progreso.map(p => `
+              <tr>
+                <td>${p.fecha}</td>
+                <td>${p.peso} kg</td>
+                <td>${p.cintura} cm</td>
+                <td>${p.pct_grasa}%</td>
+                <td>${p.pct_musculo}%</td>
+                <td>${p.press} kg</td>
+                <td>${p.sentadilla} kg</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        </div>
+      `;
+
+      document.getElementById("tab-progreso").innerHTML = html;
+    } catch(e) {
+      document.getElementById("tab-progreso").innerHTML = `<div class="empty">Error cargando progreso</div>`;
+    }
+  },
+
+  asistencias: async () => {
+    try {
+      const r = await jsonp({ accion: "asistencias_alumno", dni: DNI });
+      if (!r.ok) {
+        document.getElementById("tab-asistencias").innerHTML = `<div class="empty">${r.error}</div>`;
+        return;
+      }
+
+      const res = r.resumen;
+      const ausentes = res.total - res.asistidas;
+
+      let html = `
+        <div class="section-label">Resumen de asistencia</div>
+        <div class="asist-resumen fade-up">
+          <div class="asist-kpi">
+            <div class="asist-num azul">${res.porcentaje}%</div>
+            <div class="asist-label">Asistencia</div>
+          </div>
+          <div class="asist-kpi">
+            <div class="asist-num verde">${res.asistidas}</div>
+            <div class="asist-label">Clases asistidas</div>
+          </div>
+          <div class="asist-kpi">
+            <div class="asist-num rojo">${ausentes}</div>
+            <div class="asist-label">Ausencias</div>
+          </div>
+        </div>
+        <div class="section-label">Historial</div>
+        <div class="fade-up">
+        ${r.asistencias.map(a => {
+          const si = String(a.asistio).trim().toUpperCase() === "SÍ";
+          return `
+            <div class="asist-item">
+              <div class="asist-dot ${si ? "si" : "no"}"></div>
+              <div class="asist-fecha">${a.fecha}</div>
+              <div class="asist-tipo">${a.hora} · ${a.tipo}</div>
+              <div class="asist-estado ${si ? "si" : "no"}">${si ? "Asistió" : "Ausente"}</div>
+            </div>
+          `;
+        }).join("")}
+        </div>
+      `;
+
+      document.getElementById("tab-asistencias").innerHTML = html;
+    } catch(e) {
+      document.getElementById("tab-asistencias").innerHTML = `<div class="empty">Error cargando asistencias</div>`;
+    }
+  }
+};
+
+function salir() {
+  sessionStorage.removeItem("pt_dni");
+  sessionStorage.removeItem("pt_nombre");
+  window.location.href = "pt_dashboard.html";
+}
+
+// Cargar perfil al arrancar
+cargado["perfil"] = true;
+cargar.perfil();
+</script>
+</body>
+</html>
