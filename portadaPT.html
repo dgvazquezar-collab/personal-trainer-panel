@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso · Personal Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro:    #080809;
+    --carbon:   #101012;
+    --panel:    #16161a;
+    --borde:    #202024;
+    --borde2:   #2c2c34;
+    --purp:     #a78bfa;
+    --purp2:    #c4b5fd;
+    --purp-dim: rgba(167,139,250,0.08);
+    --purp-glow:rgba(167,139,250,0.2);
+    --rojo:     #e85d5d;
+    --rojo-dim: rgba(232,93,93,0.08);
+    --rojo-glow:rgba(232,93,93,0.2);
+    --blanco:   #f5f5f7;
+    --gris1:    #c0c0cc;
+    --gris2:    #808090;
+    --gris3:    #404048;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height: 100%; }
+
+  body {
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  /* ── FONDO ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 25% 50%, rgba(167,139,250,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 75% 50%, rgba(232,93,93,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Línea vertical divisoria sutil */
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 50%; bottom: 0;
+    width: 1px;
+    background: linear-gradient(transparent, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.04) 70%, transparent);
+    pointer-events: none;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: relative; z-index: 10;
+    padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    opacity: 0; animation: fadeDown .6s .1s ease forwards;
+  }
+
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .nav-back {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--gris2); font-size: 12px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    text-decoration: none;
+    transition: color .2s;
+  }
+
+  .nav-back:hover { color: var(--purp); }
+
+  .nav-sello {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--borde2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue'; font-size: 12px;
+    color: var(--gris2); letter-spacing: 1px;
+  }
+
+  /* ── CENTRO ── */
+  .centro {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 0 24px;
+    gap: 0;
+  }
+
+  .portada-eyebrow {
+    font-family: 'Crimson Pro';
+    font-style: italic; font-size: 16px;
+    color: var(--gris2); letter-spacing: 2px;
+    margin-bottom: 14px;
+    opacity: 0; animation: fadeUp .6s .2s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .portada-titulo {
+    font-family: 'Bebas Neue';
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: 5px;
+    color: var(--gris1);
+    margin-bottom: 56px;
+    text-align: center;
+    opacity: 0; animation: fadeUp .6s .3s ease forwards;
+  }
+
+  /* ── CARDS BIFURCACIÓN ── */
+  .bifurcacion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 740px;
+    opacity: 0; animation: fadeUp .6s .45s ease forwards;
+  }
+
+  .rol-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    aspect-ratio: 3/4;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .rol-card:hover { transform: scale(1.02) translateY(-4px); }
+  .rol-card:active { transform: scale(0.99); }
+
+  /* Card Profesional — rojo/oscuro */
+  .card-prof {
+    background: linear-gradient(160deg, #1a0808 0%, #0f0f0f 60%);
+    border: 1px solid rgba(232,93,93,0.15);
+  }
+
+  .card-prof::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232,93,93,0.12) 0%, transparent 70%);
+  }
+
+  /* Card Alumno — púrpura/oscuro */
+  .card-alum {
+    background: linear-gradient(160deg, #0e0818 0%, #0f0f0f 60%);
+    border: 1px solid rgba(167,139,250,0.15);
+  }
+
+  .card-alum::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(167,139,250,0.1) 0%, transparent 70%);
+  }
+
+  /* Número decorativo de fondo */
+  .card-num-bg {
+    position: absolute;
+    bottom: -10px; right: 10px;
+    font-family: 'Bebas Neue';
+    font-size: 140px; line-height: 1;
+    opacity: .04; pointer-events: none;
+    user-select: none;
+    transition: opacity .3s;
+  }
+
+  .rol-card:hover .card-num-bg { opacity: .07; }
+
+  /* Línea superior */
+  .card-line {
+    position: absolute; top: 0; left: 20%; right: 20%;
+    height: 1px;
+  }
+
+  .card-prof .card-line { background: linear-gradient(90deg, transparent, rgba(232,93,93,0.6), transparent); }
+  .card-alum .card-line { background: linear-gradient(90deg, transparent, rgba(167,139,250,0.6), transparent); }
+
+  /* Contenido */
+  .card-body {
+    position: relative; z-index: 2;
+    height: 100%;
+    display: flex; flex-direction: column;
+    padding: 36px 32px;
+  }
+
+  .card-icono {
+    font-size: 40px;
+    margin-bottom: auto;
+    display: block;
+  }
+
+  .card-rol {
+    font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .card-prof .card-rol { color: rgba(232,93,93,0.7); }
+  .card-alum .card-rol { color: rgba(167,139,250,0.7); }
+
+  .card-titulo {
+    font-family: 'Bebas Neue';
+    font-size: 36px; letter-spacing: 2px;
+    line-height: 1; margin-bottom: 12px;
+    color: var(--blanco);
+  }
+
+  .card-desc {
+    font-family: 'Crimson Pro'; font-weight: 300;
+    font-size: 15px; line-height: 1.6;
+    color: var(--gris2); margin-bottom: 28px;
+  }
+
+  /* Badge acceso */
+  .card-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    border-radius: 30px;
+    padding: 8px 18px;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    transition: all .25s;
+    align-self: flex-start;
+  }
+
+  .card-prof .card-badge {
+    background: rgba(232,93,93,0.12);
+    border: 1px solid rgba(232,93,93,0.3);
+    color: var(--rojo);
+  }
+
+  .card-alum .card-badge {
+    background: var(--purp-dim);
+    border: 1px solid rgba(167,139,250,0.3);
+    color: var(--purp);
+  }
+
+  .rol-card:hover .card-badge {
+    padding-right: 24px;
+  }
+
+  .card-prof:hover .card-badge {
+    background: rgba(232,93,93,0.18);
+    border-color: var(--rojo);
+  }
+
+  .card-alum:hover .card-badge {
+    background: var(--purp-glow);
+    border-color: var(--purp);
+  }
+
+  .badge-flecha {
+    transition: transform .25s;
+  }
+
+  .rol-card:hover .badge-flecha { transform: translateX(4px); }
+
+  /* Restricción */
+  .card-restriccion {
+    margin-top: 10px;
+    font-size: 11px; color: var(--gris3);
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 5;
+    padding: 20px 40px;
+    text-align: center;
+    opacity: 0; animation: fadeUp .6s .6s ease forwards;
+  }
+
+  .footer-texto {
+    font-size: 11px; color: var(--gris3);
+    letter-spacing: 1.5px;
+  }
+
+  /* ── MODAL DNI ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(8,8,9,0.85);
+    backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    width: 360px;
+    background: var(--carbon);
+    border: 1px solid var(--borde2);
+    border-radius: 24px;
+    padding: 40px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: modalIn .3s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  @keyframes modalIn {
+    from { opacity:0; transform:scale(.9) translateY(12px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
+  }
+
+  .modal-box::before {
+    content: '';
+    position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.6), transparent);
+  }
+
+  .modal-icono { font-size: 36px; margin-bottom: 16px; }
+
+  .modal-titulo {
+    font-family: 'Bebas Neue'; font-size: 26px;
+    letter-spacing: 3px; color: var(--purp);
+    margin-bottom: 4px;
+  }
+
+  .modal-sub {
+    font-family: 'Crimson Pro'; font-style: italic;
+    font-size: 15px; color: var(--gris2);
+    margin-bottom: 28px;
+  }
+
+  .modal-input {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--borde2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--blanco);
+    font-family: 'DM Sans'; font-size: 20px;
+    font-weight: 500;
+    text-align: center; letter-spacing: 5px;
+    outline: none;
+    margin-bottom: 14px;
+    transition: border-color .2s;
+    -moz-appearance: textfield;
+  }
+
+  .modal-input::-webkit-inner-spin-button,
+  .modal-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .modal-input:focus { border-color: var(--purp); }
+
+  .modal-btn {
+    width: 100%;
+    background: var(--purp);
+    color: var(--negro);
+    border: none; border-radius: 12px;
+    padding: 14px;
+    font-family: 'DM Sans'; font-weight: 700;
+    font-size: 13px; letter-spacing: 2px;
+    text-transform: uppercase; cursor: pointer;
+    transition: background .2s, transform .1s;
+    margin-bottom: 10px;
+  }
+
+  .modal-btn:hover { background: var(--purp2); transform: translateY(-1px); }
+  .modal-btn:active { transform: translateY(0); }
+
+  .modal-cancel {
+    background: none; border: none;
+    color: var(--gris3); font-size: 12px;
+    cursor: pointer; font-family: 'DM Sans';
+    padding: 6px; transition: color .2s;
+    letter-spacing: 1px;
+  }
+
+  .modal-cancel:hover { color: var(--gris2); }
+
+  .modal-error {
+    color: var(--rojo); font-size: 12px;
+    margin-top: 8px; min-height: 16px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .bifurcacion { grid-template-columns: 1fr; max-width: 380px; }
+    .rol-card { aspect-ratio: unset; min-height: 260px; }
+    nav { padding: 20px 20px; }
+    .portada-titulo { font-size: 28px; margin-bottom: 32px; }
+    .card-body { padding: 28px 24px; }
+    .card-titulo { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-back">← Volver</a>
+  <div class="nav-sello">DRL</div>
+</nav>
+
+<!-- CENTRO -->
+<div class="centro">
+  <div class="portada-eyebrow">Sistema de entrenamiento</div>
+  <div class="portada-titulo">¿CÓMO QUERÉS INGRESAR?</div>
+
+  <div class="bifurcacion">
+
+    <!-- PROFESIONAL -->
+    <a href="pt_dashboard.html" class="rol-card card-prof">
+      <div class="card-line"></div>
+      <div class="card-num-bg">01</div>
+      <div class="card-body">
+        <span class="card-icono">🏋️</span>
+        <div class="card-rol">Acceso con contraseña</div>
+        <div class="card-titulo">SOY PROFESIONAL</div>
+        <div class="card-desc">Panel de gestión, dashboard, turnos y seguimiento de todos los alumnos.</div>
+        <div class="card-badge">
+          Ingresar <span class="badge-flecha">→</span>
+        </div>
+        <div class="card-restriccion">🔒 Acceso restringido</div>
+      </div>
+    </a>
+
+    <!-- ALUMNO -->
+    <div class="rol-card card-alum" onclick="abrirDNI()">
+      <div class="card-line"></div>
+      <div class="card-num-bg">02</div>
+      <div class="card-body">
+        <span class="card-icono">🧘</span>
+        <div class="card-rol">Acceso con DNI</div>
+        <div class="card-titulo">SOY ALUMNO/A</div>
+        <div class="card-desc">Consultá tu rutina, progreso, asistencias y música ambiente para entrenar.</div>
+        <div class="card-badge">
+          Ver mi perfil <span class="badge-flecha">→</span>
+        </div>
+        <div class="card-restriccion">🔐 Solo ves tu información</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-texto">DRL · Sistema de Gestión · Personal Trainer</div>
+</footer>
+
+<!-- MODAL DNI -->
+<div class="modal-overlay" id="modalDNI" onclick="cerrarSiOverlay(event)">
+  <div class="modal-box">
+    <div class="modal-icono">🔐</div>
+    <div class="modal-titulo">Ingresá tu DNI</div>
+    <div class="modal-sub">Sin puntos ni espacios</div>
+    <input
+      type="number"
+      class="modal-input"
+      id="dniInput"
+      placeholder="35421987"
+      maxlength="10"
+    >
+    <button class="modal-btn" onclick="irAlumno()">Ver mi perfil →</button>
+    <button class="modal-cancel" onclick="cerrarDNI()">Cancelar</button>
+    <div class="modal-error" id="dniError"></div>
+  </div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwE2unIy0dVdxeWOyZfvweWSWuU0IeTvPpPTNRD9dcKPXz9Et-MAtBaUWp12XQJTtze/exec";
+
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cb = "cb_" + Date.now();
+    const url = API + "?" + Object.entries({...params, callback: cb})
+      .map(([k,v]) => k+"="+encodeURIComponent(v)).join("&");
+    const s = document.createElement("script");
+    window[cb] = data => { delete window[cb]; s.remove(); resolve(data); };
+    s.onerror = () => reject("Error de red");
+    s.src = url; document.head.appendChild(s);
+    setTimeout(() => reject("Timeout"), 10000);
+  });
+}
+
+function abrirDNI() {
+  document.getElementById("modalDNI").classList.add("open");
+  setTimeout(() => document.getElementById("dniInput").focus(), 150);
+}
+
+function cerrarDNI() {
+  document.getElementById("modalDNI").classList.remove("open");
+  document.getElementById("dniInput").value = "";
+  document.getElementById("dniError").textContent = "";
+}
+
+function cerrarSiOverlay(e) {
+  if (e.target === document.getElementById("modalDNI")) cerrarDNI();
+}
+
+document.getElementById("dniInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") irAlumno();
+  if (e.key === "Escape") cerrarDNI();
+});
+
+async function irAlumno() {
+  const dni = document.getElementById("dniInput").value.trim();
+  const errEl = document.getElementById("dniError");
+  if (!dni) { errEl.textContent = "Ingresá tu DNI"; return; }
+  errEl.textContent = "Buscando...";
+  try {
+    const r = await jsonp({ accion: "login_alumno", dni });
+    if (r.ok) {
+      sessionStorage.setItem("pt_dni", dni);
+      sessionStorage.setItem("pt_nombre", r.nombre + " " + r.apellido);
+      window.location.href = "pt_alumno.html";
+    } else {
+      errEl.textContent = r.error || "DNI no encontrado";
+    }
+  } catch(e) {
+    errEl.textContent = "Error de conexión";
+  }
+}
+</script>
+
+</body>
+</html>
