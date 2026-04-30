@@ -75,34 +75,18 @@
     background: linear-gradient(90deg, transparent, var(--oro), transparent);
   }
 
-  .login-sello {
-    width:72px; height:72px;
-    border:2px solid var(--oro);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    margin:0 auto 24px;
-    background: var(--oro-dim);
-    color: var(--oro);
-    font-family:'Bebas Neue';
-    font-size:22px;
-    letter-spacing:1px;
-  }
+
 
   .login-title {
     font-family:'Bebas Neue';
-    font-size:28px;
-    letter-spacing:3px;
-    color: var(--oro);
-    margin-bottom:4px;
+    font-size:26px;
+    letter-spacing:4px;
+    color: var(--texto);
+    margin-bottom:28px;
+    text-align:center;
   }
 
-  .login-sub {
-    font-size:12px;
-    color: var(--texto2);
-    letter-spacing:2px;
-    text-transform:uppercase;
-    margin-bottom:32px;
-  }
+
 
   .login-input {
     width:100%;
@@ -140,6 +124,15 @@
 
   .login-btn:hover { background: var(--oro2); transform:translateY(-1px); }
   .login-btn:active { transform:translateY(0); }
+
+  .login-marca {
+    font-size:10px;
+    color: var(--texto3);
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    text-align:center;
+    margin-top:20px;
+  }
 
   .login-error {
     color: var(--rojo);
@@ -552,12 +545,11 @@
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-sello">DRL</div>
-    <div class="login-title">Panel Trainer</div>
-    <div class="login-sub">Sistema de Gestión</div>
+    <div class="login-title">ACCESO EXCLUSIVO ENTRENADOR</div>
     <input type="password" class="login-input" id="login-pass" placeholder="••••••••" maxlength="20">
     <button class="login-btn" onclick="doLogin()">Ingresar</button>
     <div class="login-error" id="login-error"></div>
+    <div class="login-marca">DRL · Sistema de Gestión</div>
   </div>
 </div>
 
@@ -579,13 +571,13 @@
     <div class="header-left">
       <div class="sello-header">DRL</div>
       <div>
-        <div class="header-title">Personal Trainer</div>
-        <div class="header-sub">Panel profesional</div>
+        <div class="header-title">DRL</div>
+        <div class="header-sub">Sistema de Gestión</div>
       </div>
     </div>
     <div class="header-right">
       <div class="fecha-badge" id="fecha-header">—</div>
-      <button class="btn-alumno" onclick="abrirDNI()">👤 Acceso Alumno</button>
+      <button class="btn-alumno" onclick="abrirDNI()">Acceso Alumno</button>
     </div>
   </header>
 
@@ -681,22 +673,22 @@ async function cargarDashboard() {
     const k = r.kpis;
     document.getElementById("kpis-grid").innerHTML = `
       <div class="kpi-card oro fade-up">
-        <div class="kpi-icon">🏋️</div>
+        <div class="kpi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
         <div class="kpi-num">${k.total_alumnos}</div>
         <div class="kpi-label">Total alumnos</div>
       </div>
       <div class="kpi-card verde fade-up">
-        <div class="kpi-icon">✅</div>
+        <div class="kpi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="kpi-num">${k.alumnos_activos}</div>
         <div class="kpi-label">Activos</div>
       </div>
       <div class="kpi-card azul fade-up">
-        <div class="kpi-icon">📅</div>
+        <div class="kpi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <div class="kpi-num">${k.turnos_hoy}</div>
         <div class="kpi-label">Turnos hoy</div>
       </div>
       <div class="kpi-card amber fade-up">
-        <div class="kpi-icon">⏳</div>
+        <div class="kpi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
         <div class="kpi-num">${k.turnos_pendientes}</div>
         <div class="kpi-label">Pendientes</div>
       </div>
@@ -884,39 +876,39 @@ if (sessionStorage.getItem("pt_auth")) {
 <div class="music-player" id="musicPlayer">
   <div class="music-panel" id="musicPanel">
     <div class="mp-header">
-      <div class="mp-disc" id="mpDisc">🤘</div>
+      <div class="mp-disc" id="mpDisc"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
       <div style="flex:1;overflow:hidden;">
-        <div class="mp-track-name" id="mpTrackName">BEAST MODE 🔥</div>
+        <div class="mp-track-name" id="mpTrackName">BEAST MODE</div>
         <div class="mp-track-sub" id="mpTrackSub">Gym · Metal · Hardcore</div>
       </div>
     </div>
     <div class="mp-controls">
-      <button class="mp-btn" onclick="prevPlaylist()">⏮</button>
+      <button class="mp-btn" onclick="prevPlaylist()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
       <button class="mp-btn mp-btn-play" id="mpPlayBtn" onclick="togglePlay()">▶</button>
-      <button class="mp-btn" onclick="nextPlaylist()">⏭</button>
+      <button class="mp-btn" onclick="nextPlaylist()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
     </div>
     <div class="mp-volume">
-      <span class="mp-vol-icon">🔈</span>
+      <span class="mp-vol-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg></span>
       <input type="range" class="mp-vol-slider" id="mpVolume" min="0" max="100" value="80" oninput="setVolume(this.value)">
-      <span class="mp-vol-icon">🔊</span>
+      <span class="mp-vol-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span>
     </div>
-    <div class="mp-playlists-label">⚡ PLAYLISTS FIERRERAS</div>
+    <div class="mp-playlists-label">PLAYLISTS</div>
     <div id="mpPlaylistList"></div>
-    <div class="mp-footer">🤘 BEAST MODE ACTIVADO 🤘</div>
+    <div class="mp-footer">GYM · METAL · HARDCORE</div>
   </div>
-  <div class="music-fab" id="musicFab" onclick="togglePanel()">🤘</div>
+  <div class="music-fab" id="musicFab" onclick="togglePanel()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
 </div>
 
 <iframe class="yt-frame" id="ytFrame" allow="autoplay" allowfullscreen></iframe>
 
 <script>
 const PLAYLISTS_GYM = [
-  { name: "BEST WORKOUT MUSIC 2026 ⚡",    sub: "Gym Motivation · Max Oazo",         ytId: "q6xgKE5alcg" },
-  { name: "UNLEASHED 🔥 Savage Hardcore",  sub: "Hardcore Trap · Beast Mode 2025",   ytId: "LDCNJYZXK3g" },
-  { name: "BEAST MODE ⚡ Hardcore 2025",   sub: "Savage Energy · Gym Motivation",    ytId: "FKeVibuKeCw" },
-  { name: "Epic POWER Metal 2026 🤘",      sub: "Heavy Metal · Hard Rock",           ytId: "iB_RUTDccyY" },
-  { name: "Heavy Metal Gym Motivation 🤘", sub: "Hard Rock · Metal Mix",             ytId: "Q7JIym6E7J4" },
-  { name: "GYM MOTIVATION 2026 🔥 24/7",  sub: "Fitness · Running · Non-stop",      ytId: "C27I_4D5bMo" },
+  { name: "BEST WORKOUT MUSIC 2026",    sub: "Gym Motivation · Max Oazo",         ytId: "q6xgKE5alcg" },
+  { name: "UNLEASHED — Savage Hardcore",  sub: "Hardcore Trap · Beast Mode 2025",   ytId: "LDCNJYZXK3g" },
+  { name: "BEAST MODE — Hardcore 2025",   sub: "Savage Energy · Gym Motivation",    ytId: "FKeVibuKeCw" },
+  { name: "Epic POWER Metal 2026",      sub: "Heavy Metal · Hard Rock",           ytId: "iB_RUTDccyY" },
+  { name: "Heavy Metal Gym Motivation", sub: "Hard Rock · Metal Mix",             ytId: "Q7JIym6E7J4" },
+  { name: "GYM MOTIVATION 2026 — 24/7",  sub: "Fitness · Running · Non-stop",      ytId: "C27I_4D5bMo" },
 ];
 
 let gCurrentIdx = 0, gPlaying = false, gPanelOpen = false;
