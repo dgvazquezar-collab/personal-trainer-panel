@@ -7,26 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --negro: #0a0a0a;
-    --carbon: #111318;
-    --panel: #161b24;
-    --borde: #1e2535;
-    --borde2: #2a3347;
-    --azul: #5d9be8;
-    --azul2: #7ab4f0;
-    --azul-dim: rgba(93,155,232,0.1);
-    --azul-glow: rgba(93,155,232,0.2);
-    --oro: #c9a84c;
-    --oro-dim: rgba(201,168,76,0.1);
-    --texto: #e8e4d8;
-    --texto2: #8a8f9e;
-    --texto3: #4a5068;
-    --verde: #3ecf8e;
-    --verde-dim: rgba(62,207,142,0.1);
+    --negro: #0d0d0f;
+    --carbon: #141416;
+    --panel: #1a1a1e;
+    --borde: #252528;
+    --borde2: #303035;
+    --azul: #a78bfa;
+    --azul2: #c4b5fd;
+    --azul-dim: rgba(167,139,250,0.1);
+    --azul-glow: rgba(167,139,250,0.2);
+    --oro: #d4d4e8;
+    --oro-dim: rgba(212,212,232,0.08);
+    --texto: #f0f0f2;
+    --texto2: #9090a0;
+    --texto3: #505060;
+    --verde: #c4b5fd;
+    --verde-dim: rgba(196,181,253,0.1);
     --rojo: #e85d5d;
     --rojo-dim: rgba(232,93,93,0.1);
-    --amber: #f0a84a;
-    --amber-dim: rgba(240,168,74,0.1);
+    --amber: #d4d4e8;
+    --amber-dim: rgba(212,212,232,0.08);
     --morado: #a78bfa;
     --morado-dim: rgba(167,139,250,0.1);
   }
@@ -44,7 +44,7 @@
   body::before {
     content:'';
     position:fixed; inset:0;
-    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(93,155,232,0.05) 0%, transparent 70%);
+    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(167,139,250,0.06) 0%, transparent 70%);
     pointer-events:none; z-index:0;
   }
 
@@ -748,5 +748,146 @@ function salir() {
 cargado["perfil"] = true;
 cargar.perfil();
 </script>
+
+<!-- ══════════════════════════════════════════
+     MUSIC PLAYER — CHILLOUT 🎵 Panel Alumno
+     ══════════════════════════════════════════ -->
+<style>
+.music-player { position:fixed; bottom:24px; right:24px; z-index:999; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+.music-fab { width:52px; height:52px; background:#1a1a1e; border:1px solid #303035; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 24px rgba(0,0,0,0.4); transition:border-color .2s,box-shadow .2s,transform .2s; position:relative; flex-shrink:0; font-size:20px; }
+.music-fab:hover { border-color:#a78bfa; transform:scale(1.08); box-shadow:0 4px 32px rgba(167,139,250,0.2); }
+.music-fab.playing { border-color:#a78bfa; box-shadow:0 0 0 3px rgba(167,139,250,0.15),0 4px 24px rgba(0,0,0,0.4); }
+.music-fab.playing::before { content:''; position:absolute; inset:-6px; border-radius:50%; border:1px solid rgba(167,139,250,0.3); animation:chill-ring 2.5s ease-out infinite; }
+@keyframes chill-ring { 0%{transform:scale(1);opacity:.6;} 100%{transform:scale(1.4);opacity:0;} }
+.music-panel { background:#141416; border:1px solid #303035; border-radius:18px; overflow:hidden; width:300px; box-shadow:0 8px 40px rgba(0,0,0,0.5); transform-origin:bottom right; transition:opacity .25s,transform .25s; opacity:0; transform:scale(0.85) translateY(8px); pointer-events:none; }
+.music-panel.open { opacity:1; transform:scale(1) translateY(0); pointer-events:all; }
+.mp-header { padding:16px 18px 12px; border-bottom:1px solid #252528; display:flex; align-items:center; gap:12px; }
+.mp-disc { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#a78bfa,#6d28d9); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.mp-disc.spinning { animation:spin-slow 4s linear infinite; }
+@keyframes spin-slow { to{transform:rotate(360deg);} }
+.mp-track-name { font-size:13px; font-weight:600; color:#f0f0f2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+.mp-track-sub  { font-size:11px; color:#a78bfa; letter-spacing:.5px; }
+.mp-controls { padding:14px 18px; border-bottom:1px solid #252528; display:flex; align-items:center; justify-content:center; gap:16px; }
+.mp-btn { background:none; border:none; color:#9090a0; cursor:pointer; font-size:18px; padding:6px; border-radius:8px; transition:color .15s,background .15s; display:flex; align-items:center; justify-content:center; }
+.mp-btn:hover { color:#f0f0f2; background:rgba(167,139,250,0.1); }
+.mp-btn-play { width:44px; height:44px; background:#a78bfa; border-radius:50%; color:#0d0d0f; font-size:16px; transition:background .2s,transform .1s; }
+.mp-btn-play:hover { background:#c4b5fd; transform:scale(1.08); color:#0d0d0f; }
+.mp-volume { padding:10px 18px; border-bottom:1px solid #252528; display:flex; align-items:center; gap:10px; }
+.mp-vol-icon { font-size:14px; color:#505060; }
+.mp-vol-slider { flex:1; height:3px; -webkit-appearance:none; background:linear-gradient(90deg,#a78bfa 70%,#252528 70%); border-radius:3px; outline:none; cursor:pointer; }
+.mp-vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:#a78bfa; cursor:pointer; }
+.mp-playlists-label { padding:10px 18px 6px; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#505060; }
+.mp-playlist-item { padding:10px 18px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:background .15s; }
+.mp-playlist-item:hover { background:rgba(255,255,255,0.03); }
+.mp-playlist-item.active { background:rgba(167,139,250,0.08); }
+.mp-playlist-dot { width:8px; height:8px; border-radius:50%; background:#303035; flex-shrink:0; }
+.mp-playlist-item.active .mp-playlist-dot { background:#a78bfa; box-shadow:0 0 6px rgba(167,139,250,0.4); }
+.mp-playlist-name { font-size:13px; color:#9090a0; flex:1; transition:color .15s; }
+.mp-playlist-item.active .mp-playlist-name,
+.mp-playlist-item:hover .mp-playlist-name { color:#f0f0f2; font-weight:500; }
+.mp-playlist-dur { font-size:11px; color:#505060; }
+.mp-footer { padding:8px 18px; font-size:10px; color:#303035; text-align:center; letter-spacing:1px; border-top:1px solid #1a1a1e; }
+.yt-frame { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; top:-9999px; left:-9999px; }
+</style>
+
+<div class="music-player" id="musicPlayer">
+  <div class="music-panel" id="musicPanel">
+    <div class="mp-header">
+      <div class="mp-disc" id="mpDisc">🎵</div>
+      <div style="flex:1;overflow:hidden;">
+        <div class="mp-track-name" id="mpTrackName">Música ambiente</div>
+        <div class="mp-track-sub" id="mpTrackSub">Chillout · Lofi · Sin publicidad</div>
+      </div>
+    </div>
+    <div class="mp-controls">
+      <button class="mp-btn" onclick="prevPlaylist()">⏮</button>
+      <button class="mp-btn mp-btn-play" id="mpPlayBtn" onclick="togglePlay()">▶</button>
+      <button class="mp-btn" onclick="nextPlaylist()">⏭</button>
+    </div>
+    <div class="mp-volume">
+      <span class="mp-vol-icon">🔈</span>
+      <input type="range" class="mp-vol-slider" id="mpVolume" min="0" max="100" value="70" oninput="setVolume(this.value)">
+      <span class="mp-vol-icon">🔊</span>
+    </div>
+    <div class="mp-playlists-label">✦ Playlists</div>
+    <div id="mpPlaylistList"></div>
+    <div class="mp-footer">Música sin publicidad · Entrená con calma 🌊</div>
+  </div>
+  <div class="music-fab" id="musicFab" onclick="togglePanel()">🎵</div>
+</div>
+
+<iframe class="yt-frame" id="ytFrame" allow="autoplay" allowfullscreen></iframe>
+
+<script>
+const PLAYLISTS_CHILL = [
+  { name: "Chillhop Essentials · Spring 2026", sub: "Lofi hip hop · 1h+",        ytId: "QRFv3HESAtE" },
+  { name: "Chillhop Essentials · Summer 2025", sub: "Lofi beats relajados · 1h+", ytId: "OkjC4z5dFrg" },
+  { name: "Perfect Lofi Chillout Mix 🎧",      sub: "Lo-fi · 3 horas",           ytId: "RybjjdF8I_Y" },
+  { name: "Chill Music Mix · Lofi Chillpop",   sub: "Instrumentales · 2h+",      ytId: "OewPSRDs7ok" },
+  { name: "Wake Up Happy 2026 ☀️",             sub: "Chillout House · Relax",    ytId: "G7PlSULxBIw" },
+];
+
+let cCurrentIdx = 0, cPlaying = false, cPanelOpen = false;
+const cPanel    = document.getElementById("musicPanel");
+const cFab      = document.getElementById("musicFab");
+const cPlayBtn  = document.getElementById("mpPlayBtn");
+const cDisc     = document.getElementById("mpDisc");
+const cTrackName= document.getElementById("mpTrackName");
+const cTrackSub = document.getElementById("mpTrackSub");
+const cYtFrame  = document.getElementById("ytFrame");
+const cVolSlider= document.getElementById("mpVolume");
+const cListEl   = document.getElementById("mpPlaylistList");
+
+function renderChillList() {
+  cListEl.innerHTML = PLAYLISTS_CHILL.map((p,i) => `
+    <div class="mp-playlist-item ${i===cCurrentIdx?'active':''}" onclick="selectChill(${i})">
+      <div class="mp-playlist-dot"></div>
+      <div class="mp-playlist-name">${p.name}</div>
+      <div class="mp-playlist-dur">${p.sub.split('·')[1]?.trim()||''}</div>
+    </div>
+  `).join("");
+}
+renderChillList();
+
+function togglePanel() { cPanelOpen=!cPanelOpen; cPanel.classList.toggle("open",cPanelOpen); }
+
+function selectChill(idx) {
+  cCurrentIdx = idx;
+  renderChillList();
+  const p = PLAYLISTS_CHILL[idx];
+  cTrackName.textContent = p.name;
+  cTrackSub.textContent  = p.sub;
+  const params = "autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1";
+  cYtFrame.src = `https://www.youtube.com/embed/${p.ytId}?${params}`;
+  cPlaying = true; updateChillUI();
+}
+
+function togglePlay() {
+  if (!cYtFrame.src || cYtFrame.src === "about:blank") { selectChill(0); return; }
+  if (cPlaying) {
+    cYtFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
+    cPlaying = false;
+  } else {
+    cYtFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');
+    cPlaying = true;
+  }
+  updateChillUI();
+}
+
+function prevPlaylist() { cCurrentIdx=(cCurrentIdx-1+PLAYLISTS_CHILL.length)%PLAYLISTS_CHILL.length; selectChill(cCurrentIdx); }
+function nextPlaylist()  { cCurrentIdx=(cCurrentIdx+1)%PLAYLISTS_CHILL.length; selectChill(cCurrentIdx); }
+
+function setVolume(val) {
+  cVolSlider.style.background = `linear-gradient(90deg,#a78bfa ${val}%,#252528 ${val}%)`;
+  cYtFrame.contentWindow?.postMessage(`{"event":"command","func":"setVolume","args":[${val}]}`,'*');
+}
+
+function updateChillUI() {
+  cPlayBtn.textContent = cPlaying ? "⏸" : "▶";
+  cFab.classList.toggle("playing", cPlaying);
+  cDisc.classList.toggle("spinning", cPlaying);
+}
+</script>
+<!-- ══ FIN PLAYER CHILLOUT ══ -->
 </body>
 </html>
