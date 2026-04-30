@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRL — Panel Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #0a0a0a;
+    --carbon: #111318;
+    --panel: #161b24;
+    --borde: #1e2535;
+    --borde2: #2a3347;
+    --oro: #c9a84c;
+    --oro2: #e8c870;
+    --oro-dim: rgba(201,168,76,0.12);
+    --oro-glow: rgba(201,168,76,0.25);
+    --texto: #e8e4d8;
+    --texto2: #8a8f9e;
+    --texto3: #4a5068;
+    --verde: #3ecf8e;
+    --verde-dim: rgba(62,207,142,0.1);
+    --rojo: #e85d5d;
+    --rojo-dim: rgba(232,93,93,0.1);
+    --azul: #5d9be8;
+    --azul-dim: rgba(93,155,232,0.1);
+    --amber: #f0a84a;
+    --amber-dim: rgba(240,168,74,0.1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--negro);
+    color: var(--texto);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Fondo con textura sutil */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px);
+    pointer-events:none; z-index:0;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--negro);
+  }
+
+  .login-box {
+    width:380px;
+    background: var(--carbon);
+    border: 1px solid var(--borde2);
+    border-radius: 20px;
+    padding: 48px 40px;
+    text-align: center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .login-box::before {
+    content:'';
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:200px; height:1px;
+    background: linear-gradient(90deg, transparent, var(--oro), transparent);
+  }
+
+  .login-sello {
+    width:72px; height:72px;
+    border:2px solid var(--oro);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 24px;
+    background: var(--oro-dim);
+    color: var(--oro);
+    font-family:'Bebas Neue';
+    font-size:22px;
+    letter-spacing:1px;
+  }
+
+  .login-title {
+    font-family:'Bebas Neue';
+    font-size:28px;
+    letter-spacing:3px;
+    color: var(--oro);
+    margin-bottom:4px;
+  }
+
+  .login-sub {
+    font-size:12px;
+    color: var(--texto2);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:32px;
+  }
+
+  .login-input {
+    width:100%;
+    background: var(--panel);
+    border: 1px solid var(--borde2);
+    border-radius:10px;
+    padding:14px 16px;
+    color: var(--texto);
+    font-family:'DM Sans';
+    font-size:15px;
+    outline:none;
+    text-align:center;
+    letter-spacing:4px;
+    margin-bottom:16px;
+    transition: border-color .2s;
+  }
+
+  .login-input:focus { border-color: var(--oro); }
+
+  .login-btn {
+    width:100%;
+    background: var(--oro);
+    color: var(--negro);
+    border:none;
+    border-radius:10px;
+    padding:14px;
+    font-family:'DM Sans';
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition: background .2s, transform .1s;
+  }
+
+  .login-btn:hover { background: var(--oro2); transform:translateY(-1px); }
+  .login-btn:active { transform:translateY(0); }
+
+  .login-error {
+    color: var(--rojo);
+    font-size:12px;
+    margin-top:12px;
+    min-height:18px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position:sticky; top:0; z-index:50;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--borde);
+    padding:0 32px;
+    height:60px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .header-left {
+    display:flex; align-items:center; gap:14px;
+  }
+
+  .sello-header {
+    width:36px; height:36px;
+    border:1.5px solid var(--oro);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue'; font-size:13px;
+    color: var(--oro); background: var(--oro-dim);
+    letter-spacing:1px;
+  }
+
+  .header-title {
+    font-family:'Bebas Neue';
+    font-size:20px;
+    letter-spacing:3px;
+    color: var(--oro);
+  }
+
+  .header-sub {
+    font-size:11px;
+    color: var(--texto3);
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+
+  .header-right {
+    display:flex; align-items:center; gap:20px;
+  }
+
+  .fecha-badge {
+    font-size:12px;
+    color: var(--texto2);
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius:20px;
+    padding:5px 14px;
+  }
+
+  .btn-alumno {
+    background: var(--oro-dim);
+    border: 1px solid var(--oro);
+    color: var(--oro);
+    border-radius:8px;
+    padding:7px 16px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:1px;
+    cursor:pointer;
+    transition: background .2s;
+  }
+
+  .btn-alumno:hover { background: var(--oro-glow); }
+
+  /* ── LAYOUT ── */
+  .app { position:relative; z-index:1; }
+
+  .main {
+    max-width:1200px;
+    margin:0 auto;
+    padding:32px 24px;
+  }
+
+  .section-label {
+    font-size:10px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color: var(--texto3);
+    margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+
+  .section-label::after {
+    content:''; flex:1; height:1px;
+    background: linear-gradient(90deg, var(--borde), transparent);
+  }
+
+  /* ── KPIs ── */
+  .kpis-grid {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:16px;
+    margin-bottom:32px;
+  }
+
+  .kpi-card {
+    background: var(--carbon);
+    border: 1px solid var(--borde);
+    border-radius:16px;
+    padding:24px 20px;
+    position:relative;
+    overflow:hidden;
+    transition: border-color .2s, transform .2s;
+    cursor:default;
+  }
+
+  .kpi-card:hover {
+    border-color: var(--borde2);
+    transform:translateY(-2px);
+  }
+
+  .kpi-card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:2px;
+  }
+
+  .kpi-card.oro::before   { background: linear-gradient(90deg, transparent, var(--oro), transparent); }
+  .kpi-card.verde::before { background: linear-gradient(90deg, transparent, var(--verde), transparent); }
+  .kpi-card.azul::before  { background: linear-gradient(90deg, transparent, var(--azul), transparent); }
+  .kpi-card.amber::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+
+  .kpi-icon {
+    font-size:22px;
+    margin-bottom:12px;
+  }
+
+  .kpi-num {
+    font-family:'Bebas Neue';
+    font-size:48px;
+    line-height:1;
+    margin-bottom:4px;
+  }
+
+  .kpi-card.oro   .kpi-num { color: var(--oro); }
+  .kpi-card.verde .kpi-num { color: var(--verde); }
+  .kpi-card.azul  .kpi-num { color: var(--azul); }
+  .kpi-card.amber .kpi-num { color: var(--amber); }
+
+  .kpi-label {
+    font-size:12px;
+    color: var(--texto2);
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  /* ── GRILLA INFERIOR ── */
+  .bottom-grid {
+    display:grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap:16px;
+  }
+
+  /* ── TURNOS HOY ── */
+  .panel-card {
+    background: var(--carbon);
+    border: 1px solid var(--borde);
+    border-radius:16px;
+    overflow:hidden;
+  }
+
+  .panel-header {
+    padding:18px 24px;
+    border-bottom: 1px solid var(--borde);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .panel-header-title {
+    font-family:'Bebas Neue';
+    font-size:18px;
+    letter-spacing:2px;
+    color: var(--texto);
+  }
+
+  .badge {
+    font-size:11px;
+    font-weight:600;
+    padding:3px 10px;
+    border-radius:20px;
+  }
+
+  .badge-verde { background:var(--verde-dim); color:var(--verde); border:1px solid rgba(62,207,142,0.2); }
+  .badge-amber { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(240,168,74,0.2); }
+  .badge-rojo  { background:var(--rojo-dim);  color:var(--rojo);  border:1px solid rgba(232,93,93,0.2); }
+  .badge-azul  { background:var(--azul-dim);  color:var(--azul);  border:1px solid rgba(93,155,232,0.2); }
+  .badge-oro   { background:var(--oro-dim);   color:var(--oro);   border:1px solid rgba(201,168,76,0.2); }
+
+  .turno-item {
+    padding:16px 24px;
+    border-bottom: 1px solid var(--borde);
+    display:flex; align-items:center; gap:16px;
+    transition: background .15s;
+  }
+
+  .turno-item:last-child { border-bottom:none; }
+  .turno-item:hover { background: rgba(255,255,255,0.02); }
+
+  .turno-hora {
+    font-family:'Bebas Neue';
+    font-size:26px;
+    color: var(--oro);
+    min-width:70px;
+    line-height:1;
+  }
+
+  .turno-info { flex:1; }
+
+  .turno-nombre {
+    font-weight:500;
+    font-size:15px;
+    color: var(--texto);
+    margin-bottom:3px;
+  }
+
+  .turno-meta {
+    font-size:12px;
+    color: var(--texto2);
+    display:flex; gap:10px;
+  }
+
+  .turno-dot {
+    display:inline-block;
+    width:4px; height:4px;
+    border-radius:50%;
+    background: var(--texto3);
+    vertical-align:middle;
+    margin:0 2px;
+  }
+
+  .empty-state {
+    padding:40px 24px;
+    text-align:center;
+    color: var(--texto3);
+    font-size:13px;
+  }
+
+  /* ── ALUMNOS RECIENTES ── */
+  .alumno-item {
+    padding:14px 24px;
+    border-bottom: 1px solid var(--borde);
+    display:flex; align-items:center; gap:12px;
+    transition: background .15s;
+  }
+
+  .alumno-item:last-child { border-bottom:none; }
+  .alumno-item:hover { background: rgba(255,255,255,0.02); }
+
+  .alumno-avatar {
+    width:38px; height:38px;
+    border-radius:50%;
+    background: var(--oro-dim);
+    border: 1px solid var(--oro);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue'; font-size:15px;
+    color: var(--oro);
+    flex-shrink:0;
+  }
+
+  .alumno-info { flex:1; }
+
+  .alumno-nombre {
+    font-weight:500;
+    font-size:14px;
+    margin-bottom:2px;
+  }
+
+  .alumno-dni {
+    font-size:11px;
+    color: var(--texto3);
+    font-family:'DM Sans';
+    letter-spacing:1px;
+  }
+
+  /* ── LOADING ── */
+  .loading {
+    display:flex; align-items:center; justify-content:center;
+    padding:40px;
+    color: var(--texto3);
+    font-size:13px;
+    gap:10px;
+  }
+
+  .spinner {
+    width:16px; height:16px;
+    border:2px solid var(--borde2);
+    border-top-color: var(--oro);
+    border-radius:50%;
+    animation: spin .7s linear infinite;
+  }
+
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* ── PANEL DNI ALUMNO ── */
+  #dni-screen {
+    display:none;
+    position:fixed; inset:0; z-index:80;
+    background: var(--negro);
+    align-items:center; justify-content:center;
+  }
+
+  #dni-screen.visible { display:flex; }
+
+  .dni-box {
+    width:380px;
+    background: var(--carbon);
+    border: 1px solid var(--borde2);
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .dni-box::before {
+    content:'';
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:200px; height:1px;
+    background: linear-gradient(90deg, transparent, var(--azul), transparent);
+  }
+
+  .dni-title {
+    font-family:'Bebas Neue';
+    font-size:24px;
+    letter-spacing:3px;
+    color: var(--azul);
+    margin-bottom:4px;
+  }
+
+  .dni-sub {
+    font-size:12px;
+    color: var(--texto2);
+    margin-bottom:28px;
+  }
+
+  .dni-input {
+    width:100%;
+    background: var(--panel);
+    border: 1px solid var(--borde2);
+    border-radius:10px;
+    padding:14px 16px;
+    color: var(--texto);
+    font-family:'DM Sans'; font-size:18px;
+    outline:none; text-align:center;
+    letter-spacing:4px;
+    margin-bottom:12px;
+    transition: border-color .2s;
+  }
+
+  .dni-input:focus { border-color: var(--azul); }
+
+  .dni-btn {
+    width:100%;
+    background: var(--azul);
+    color: var(--negro);
+    border:none; border-radius:10px;
+    padding:13px; font-family:'DM Sans';
+    font-weight:600; font-size:13px;
+    letter-spacing:2px; text-transform:uppercase;
+    cursor:pointer; transition: opacity .2s;
+    margin-bottom:8px;
+  }
+
+  .dni-btn:hover { opacity:.9; }
+
+  .dni-cancel {
+    background:none; border:none;
+    color: var(--texto3); font-size:12px;
+    cursor:pointer; padding:8px;
+    font-family:'DM Sans';
+  }
+
+  .dni-cancel:hover { color: var(--texto2); }
+  .dni-error { color:var(--rojo); font-size:12px; margin-top:8px; min-height:18px; }
+
+  /* ── ANIMACIONES ENTRADA ── */
+  .fade-up {
+    opacity:0; transform:translateY(16px);
+    animation: fadeUp .4s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  .kpi-card:nth-child(1) { animation-delay:.05s; }
+  .kpi-card:nth-child(2) { animation-delay:.1s; }
+  .kpi-card:nth-child(3) { animation-delay:.15s; }
+  .kpi-card:nth-child(4) { animation-delay:.2s; }
+
+  @media(max-width:768px){
+    .kpis-grid { grid-template-columns:repeat(2,1fr); }
+    .bottom-grid { grid-template-columns:1fr; }
+    .main { padding:20px 16px; }
+    header { padding:0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-sello">DRL</div>
+    <div class="login-title">Panel Trainer</div>
+    <div class="login-sub">Sistema de Gestión</div>
+    <input type="password" class="login-input" id="login-pass" placeholder="••••••••" maxlength="20">
+    <button class="login-btn" onclick="doLogin()">Ingresar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- MODAL DNI ALUMNO -->
+<div id="dni-screen">
+  <div class="dni-box">
+    <div class="dni-title">Panel Alumno</div>
+    <div class="dni-sub">Ingresá tu DNI para ver tu perfil</div>
+    <input type="number" class="dni-input" id="dni-input" placeholder="35421987" maxlength="10">
+    <button class="dni-btn" onclick="irAlumno()">Ver mi perfil</button>
+    <button class="dni-cancel" onclick="cerrarDNI()">Cancelar</button>
+    <div class="dni-error" id="dni-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app" style="display:none">
+  <header>
+    <div class="header-left">
+      <div class="sello-header">DRL</div>
+      <div>
+        <div class="header-title">Personal Trainer</div>
+        <div class="header-sub">Panel profesional</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="fecha-badge" id="fecha-header">—</div>
+      <button class="btn-alumno" onclick="abrirDNI()">👤 Acceso Alumno</button>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- KPIs -->
+    <div class="section-label">Resumen del día</div>
+    <div class="kpis-grid" id="kpis-grid">
+      <div class="loading"><div class="spinner"></div> Cargando...</div>
+    </div>
+
+    <!-- Grilla inferior -->
+    <div class="bottom-grid">
+
+      <!-- Turnos hoy -->
+      <div class="panel-card fade-up" style="animation-delay:.25s">
+        <div class="panel-header">
+          <div class="panel-header-title">Turnos de hoy</div>
+          <span class="badge badge-oro" id="badge-turnos">—</span>
+        </div>
+        <div id="turnos-hoy-list">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Alumnos activos -->
+      <div class="panel-card fade-up" style="animation-delay:.3s">
+        <div class="panel-header">
+          <div class="panel-header-title">Alumnos activos</div>
+          <span class="badge badge-verde" id="badge-alumnos">—</span>
+        </div>
+        <div id="alumnos-list">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwE2unIy0dVdxeWOyZfvweWSWuU0IeTvPpPTNRD9dcKPXz9Et-MAtBaUWp12XQJTtze/exec";
+
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cb = "cb_" + Date.now();
+    const url = API + "?" + Object.entries({...params, callback: cb})
+      .map(([k,v]) => k+"="+encodeURIComponent(v)).join("&");
+    const s = document.createElement("script");
+    window[cb] = data => { delete window[cb]; s.remove(); resolve(data); };
+    s.onerror = () => reject("Error de red");
+    s.src = url;
+    document.head.appendChild(s);
+    setTimeout(() => reject("Timeout"), 10000);
+  });
+}
+
+// ── LOGIN ──
+document.getElementById("login-pass").addEventListener("keydown", e => {
+  if (e.key === "Enter") doLogin();
+});
+
+async function doLogin() {
+  const pass = document.getElementById("login-pass").value.trim();
+  if (!pass) return;
+  const errEl = document.getElementById("login-error");
+  errEl.textContent = "Verificando...";
+  try {
+    const r = await jsonp({ accion: "login_prof", pass });
+    if (r.ok) {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      sessionStorage.setItem("pt_auth", "1");
+      cargarDashboard();
+    } else {
+      errEl.textContent = "Contraseña incorrecta";
+      document.getElementById("login-pass").value = "";
+    }
+  } catch(e) {
+    errEl.textContent = "Error de conexión";
+  }
+}
+
+// ── DASHBOARD ──
+async function cargarDashboard() {
+  try {
+    const r = await jsonp({ accion: "dashboard" });
+    if (!r.ok) return;
+
+    document.getElementById("fecha-header").textContent = r.fecha_hoy;
+
+    // KPIs
+    const k = r.kpis;
+    document.getElementById("kpis-grid").innerHTML = `
+      <div class="kpi-card oro fade-up">
+        <div class="kpi-icon">🏋️</div>
+        <div class="kpi-num">${k.total_alumnos}</div>
+        <div class="kpi-label">Total alumnos</div>
+      </div>
+      <div class="kpi-card verde fade-up">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-num">${k.alumnos_activos}</div>
+        <div class="kpi-label">Activos</div>
+      </div>
+      <div class="kpi-card azul fade-up">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-num">${k.turnos_hoy}</div>
+        <div class="kpi-label">Turnos hoy</div>
+      </div>
+      <div class="kpi-card amber fade-up">
+        <div class="kpi-icon">⏳</div>
+        <div class="kpi-num">${k.turnos_pendientes}</div>
+        <div class="kpi-label">Pendientes</div>
+      </div>
+    `;
+
+    // Turnos hoy
+    document.getElementById("badge-turnos").textContent = r.turnos_hoy.length + " turnos";
+    const listaTurnos = document.getElementById("turnos-hoy-list");
+    if (r.turnos_hoy.length === 0) {
+      listaTurnos.innerHTML = `<div class="empty-state">Sin turnos programados para hoy</div>`;
+    } else {
+      listaTurnos.innerHTML = r.turnos_hoy.map(t => `
+        <div class="turno-item">
+          <div class="turno-hora">${t.hora}</div>
+          <div class="turno-info">
+            <div class="turno-nombre">${t.nombre}</div>
+            <div class="turno-meta">
+              <span>${t.tipo}</span>
+              <span class="turno-dot"></span>
+              <span>${t.modalidad}</span>
+              <span class="turno-dot"></span>
+              <span>${t.duracion} min</span>
+            </div>
+          </div>
+          <span class="badge ${t.estado === 'CONFIRMADO' ? 'badge-verde' : t.estado === 'CANCELADO' ? 'badge-rojo' : 'badge-amber'}">${t.estado}</span>
+        </div>
+      `).join("");
+    }
+
+    // Alumnos activos
+    cargarAlumnos();
+
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+async function cargarAlumnos() {
+  try {
+    const r = await jsonp({ accion: "lista_alumnos" });
+    if (!r.ok) return;
+    const activos = r.alumnos.filter(a => a.estado === "ACTIVO");
+    document.getElementById("badge-alumnos").textContent = activos.length;
+    document.getElementById("alumnos-list").innerHTML = activos.map(a => `
+      <div class="alumno-item">
+        <div class="alumno-avatar">${(a.nombre[0]||"") + (a.apellido[0]||"")}</div>
+        <div class="alumno-info">
+          <div class="alumno-nombre">${a.apellido} ${a.nombre}</div>
+          <div class="alumno-dni">DNI ${a.dni} · ${a.objetivo}</div>
+        </div>
+        <span class="badge badge-verde" style="font-size:10px">${a.nivel}</span>
+      </div>
+    `).join("");
+  } catch(e) {}
+}
+
+// ── ACCESO ALUMNO ──
+function abrirDNI() {
+  document.getElementById("dni-screen").classList.add("visible");
+  setTimeout(() => document.getElementById("dni-input").focus(), 100);
+}
+
+function cerrarDNI() {
+  document.getElementById("dni-screen").classList.remove("visible");
+  document.getElementById("dni-input").value = "";
+  document.getElementById("dni-error").textContent = "";
+}
+
+document.getElementById("dni-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") irAlumno();
+});
+
+async function irAlumno() {
+  const dni = document.getElementById("dni-input").value.trim();
+  const errEl = document.getElementById("dni-error");
+  if (!dni) { errEl.textContent = "Ingresá tu DNI"; return; }
+  errEl.textContent = "Buscando...";
+  try {
+    const r = await jsonp({ accion: "login_alumno", dni });
+    if (r.ok) {
+      sessionStorage.setItem("pt_dni", dni);
+      sessionStorage.setItem("pt_nombre", r.nombre + " " + r.apellido);
+      window.location.href = "pt_alumno.html";
+    } else {
+      errEl.textContent = r.error || "DNI no encontrado";
+    }
+  } catch(e) {
+    errEl.textContent = "Error de conexión";
+  }
+}
+
+// Auto-login si ya estaba logueado
+if (sessionStorage.getItem("pt_auth")) {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  cargarDashboard();
+}
+</script>
+</body>
+</html>
